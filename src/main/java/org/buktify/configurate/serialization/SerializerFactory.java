@@ -34,6 +34,7 @@ public class SerializerFactory {
 
     private void registerDefaultSerializers() {
         register(IntegerSerializer.class);
+        register(BooleanSerializer.class);
         register(StringSerializer.class);
         register(FloatSerializer.class);
         register(DoubleSerializer.class);
