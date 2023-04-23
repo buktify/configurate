@@ -1,7 +1,7 @@
-package dev.temez.configurate.serialization.serializer.impl;
+package org.buktify.configurate.serialization.serializer.impl;
 
-import dev.temez.configurate.serialization.serializer.Serializer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.buktify.configurate.serialization.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 
 public final class FloatSerializer implements Serializer<Float> {

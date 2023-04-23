@@ -1,4 +1,4 @@
-package dev.temez.configurate.annotation;
+package org.buktify.configurate.annotation;
 
 import org.jetbrains.annotations.NotNull;
 

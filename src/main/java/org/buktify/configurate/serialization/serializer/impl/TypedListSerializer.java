@@ -1,7 +1,7 @@
-package dev.temez.configurate.serialization.serializer.impl;
+package org.buktify.configurate.serialization.serializer.impl;
 
-import dev.temez.configurate.serialization.serializer.Serializer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.buktify.configurate.serialization.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -12,9 +12,7 @@ public class TypedListSerializer {
 
     public <T> List<T> deserialize(@NotNull Serializer<T> typeSerializer, @NotNull String path, @NotNull FileConfiguration configuration) {
         List<T> list = new ArrayList<>();
-        Objects.requireNonNull(configuration.getConfigurationSection(path)).getKeys(false).forEach(key -> {
-            list.add(typeSerializer.deserialize(path + "." + key, configuration));
-        });
+        Objects.requireNonNull(configuration.getConfigurationSection(path)).getKeys(false).forEach(key -> list.add(typeSerializer.deserialize(path + "." + key, configuration)));
         return list;
     }
 

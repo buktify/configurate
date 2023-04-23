@@ -3,8 +3,9 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'dev.temez'
+group = 'org.buktify'
 version = '1.0'
+sourceCompatibility = '17'
 
 repositories {
     mavenCentral()
@@ -19,8 +20,8 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    implementation 'org.jetbrains:annotations:24.0.1'
 }
-
 
 publishing {
     repositories {
@@ -37,7 +38,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifactId = 'configurate'
-            group = 'dev.temez'
+            group = 'org.buktify'
             version = '1.0'
             from components.java
             versionMapping {

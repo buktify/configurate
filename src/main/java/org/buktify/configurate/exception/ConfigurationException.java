@@ -1,4 +1,4 @@
-package dev.temez.configurate.exception;
+package org.buktify.configurate.exception;
 
 import org.jetbrains.annotations.NotNull;
 

@@ -1,4 +1,4 @@
-package dev.temez.configurate.serialization.serializer;
+package org.buktify.configurate.serialization.serializer;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;

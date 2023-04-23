@@ -1,6 +1,5 @@
-package dev.temez.configurate.serialization.serializer.impl;
+package org.buktify.configurate.serialization.serializer.impl;
 
-import dev.temez.configurate.serialization.serializer.Serializer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -8,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.buktify.configurate.serialization.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

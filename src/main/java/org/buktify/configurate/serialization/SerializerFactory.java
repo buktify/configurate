@@ -1,13 +1,13 @@
-package dev.temez.configurate.serialization;
+package org.buktify.configurate.serialization;
 
-import dev.temez.configurate.exception.SerializationException;
-import dev.temez.configurate.serialization.serializer.Serializer;
-import dev.temez.configurate.serialization.serializer.impl.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.buktify.configurate.exception.SerializationException;
+import org.buktify.configurate.serialization.serializer.Serializer;
+import org.buktify.configurate.serialization.serializer.impl.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;

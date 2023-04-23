@@ -1,10 +1,5 @@
-package dev.temez.configurate;
+package org.buktify.configurate;
 
-import dev.temez.configurate.annotation.Comment;
-import dev.temez.configurate.annotation.Configuration;
-import dev.temez.configurate.annotation.Variable;
-import dev.temez.configurate.exception.ConfigurationException;
-import dev.temez.configurate.serialization.SerializerFactory;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -13,6 +8,11 @@ import lombok.experimental.NonFinal;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.buktify.configurate.annotation.Comment;
+import org.buktify.configurate.annotation.Configuration;
+import org.buktify.configurate.annotation.Variable;
+import org.buktify.configurate.exception.ConfigurationException;
+import org.buktify.configurate.serialization.SerializerFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -27,6 +27,7 @@ import java.util.List;
  */
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@SuppressWarnings("unused")
 public class ConfigurationService {
 
 
