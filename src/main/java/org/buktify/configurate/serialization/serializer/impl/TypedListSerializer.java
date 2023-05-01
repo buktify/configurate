@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 public class TypedListSerializer {
 
     public <T> List<T> deserialize(@NotNull Serializer<T> typeSerializer, @NotNull String path, @NotNull FileConfiguration configuration) {

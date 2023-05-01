@@ -1,4 +1,4 @@
-package org.buktify.configurate.serialization.serializer.impl;
+package org.buktify.configurate.serialization.serializer.impl.bukkit;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 public class LocationSerializer implements Serializer<Location> {

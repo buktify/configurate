@@ -4,6 +4,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.buktify.configurate.serialization.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public final class FloatSerializer implements Serializer<Float> {
     @Override
     public Float deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {

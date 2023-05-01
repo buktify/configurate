@@ -4,6 +4,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.buktify.configurate.serialization.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 
+@SuppressWarnings("unused")
 public final class DoubleSerializer implements Serializer<Double> {
 
     @Override

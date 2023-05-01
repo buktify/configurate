@@ -1,10 +1,12 @@
 package org.buktify.configurate;
 
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
+import lombok.extern.log4j.Log4j2;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -12,6 +14,7 @@ import org.buktify.configurate.annotation.Comment;
 import org.buktify.configurate.annotation.Configuration;
 import org.buktify.configurate.annotation.Variable;
 import org.buktify.configurate.exception.ConfigurationException;
+import org.buktify.configurate.exception.SerializationException;
 import org.buktify.configurate.serialization.SerializerFactory;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,11 +30,13 @@ import java.util.List;
  */
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
+@Log4j2
 @SuppressWarnings("unused")
 public class ConfigurationService {
 
-
-    List<Object> loadedConfigurations = new ArrayList<>();
+    @Getter
+    ConfigurationPool configurationPool = new ConfigurationPool();
+    List<Class<?>> loadedConfigurations = new ArrayList<>();
     SerializerFactory serializerFactory = new SerializerFactory();
     @NonFinal
     File baseDirectory;
@@ -54,7 +59,8 @@ public class ConfigurationService {
      * @return the configuration service
      */
     @SuppressWarnings("unused")
-    public ConfigurationService registerSerializers(Class<?>... serializers) {
+    @SneakyThrows(SerializationException.class)
+    public ConfigurationService registerSerializers(@NotNull Class<?>... serializers) {
         serializerFactory.register(serializers);
         return this;
     }
@@ -65,7 +71,7 @@ public class ConfigurationService {
      * @param objects the configuration object to register
      * @return the configuration service
      */
-    public ConfigurationService registerConfiguration(@NotNull Object... objects) {
+    public ConfigurationService registerConfigurations(@NotNull Class<?>... objects) {
         loadedConfigurations.addAll(Arrays.stream(objects).toList());
         return this;
     }
@@ -75,21 +81,29 @@ public class ConfigurationService {
      */
     @SneakyThrows(ConfigurationException.class)
     public void apply() {
-        for (Object configuration : loadedConfigurations) {
+        if (baseDirectory == null)
+            throw new ConfigurationException("Root directory is null, please specify it before usage");
+        for (Class<?> configuration : loadedConfigurations) {
             processConfiguration(configuration);
         }
     }
 
     /**
-     * Processes a configuration object by deserializing annotated fields and gathering data from,
-     * linked in configuration, file.
+     * Processes a configurationClass object by deserializing annotated fields and gathering data from,
+     * linked in configurationClass, file.
      *
-     * @param configuration the configuration object to process
-     * @throws ConfigurationException if the configuration object is not annotated with @Configuration
+     * @param configurationClass the configurationClass object to process
+     * @throws ConfigurationException if the configurationClass object is not annotated with @Configuration
      */
     @SneakyThrows({IOException.class, InvalidConfigurationException.class, IllegalAccessException.class})
-    private void processConfiguration(@NotNull Object configuration) throws ConfigurationException {
-        Configuration configurationAnnotation = configuration.getClass().getAnnotation(Configuration.class);
+    private void processConfiguration(@NotNull Class<?> configurationClass) throws ConfigurationException {
+        Object configuration;
+        try {
+            configuration = configurationClass.getDeclaredConstructor().newInstance();
+        } catch (Exception ignored) {
+            throw new ConfigurationException("Can't initialize " + configurationClass.getSimpleName() + ", configuration class must have no arguments constructor");
+        }
+        Configuration configurationAnnotation = configurationClass.getAnnotation(Configuration.class);
         if (configurationAnnotation == null)
             throw new ConfigurationException("Configuration " + configuration.getClass().getSimpleName() + " must be annotated with @Configuration");
         List<Field> fields = Arrays.stream(configuration.getClass().getDeclaredFields()).toList();
@@ -110,6 +124,7 @@ public class ConfigurationService {
             }
             field.set(configuration, serializerFactory.deserialize(field.getType(), variable.value(), fileConfiguration));
         }
+        configurationPool.put(configuration);
     }
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -131,7 +146,11 @@ public class ConfigurationService {
                     serializerFactory.serializeTypedList(field.get(configuration), genericType, variable.value(), fileConfiguration);
                     Comment comment = field.getAnnotation(Comment.class);
                     if (comment == null) continue;
-                    fileConfiguration.setComments(variable.value(), Arrays.stream(comment.value()).toList());
+                    try {
+                        fileConfiguration.setComments(variable.value(), Arrays.stream(comment.value()).toList());
+                    } catch (Exception ignored) {
+                        log.warn("Comments are not supported on your Bukkit version");
+                    }
                     continue;
                 }
             }
