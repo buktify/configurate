@@ -14,7 +14,7 @@ import org.buktify.configurate.serialization.serializer.impl.bukkit.WorldSeriali
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -24,26 +24,25 @@ public class SerializerFactory {
     @Getter
     List<Class<?>> primitivesList = List.of(Boolean.class, Short.class, Double.class, Byte.class, String.class, Integer.class, Character.class);
 
-    List<String> serializerRegistry = new ArrayList<>();
+    HashMap<Class<? extends Serializer<?>>, Serializer<?>> serializerRegistry = new HashMap<>();
 
 
     public SerializerFactory() {
         registerDefaultSerializers();
     }
 
-    public void register(@NotNull Class<?>... serializers) throws SerializationException {
-        for (Class<?> serializerClass : serializers) {
-            if (!Serializer.class.isAssignableFrom(serializerClass)) {
-                throw new SerializationException(serializerClass.getSimpleName() + " must implement Serializer");
-            }
-            if (!serializerClass.getSimpleName().endsWith("Serializer")) {
-                throw new SerializationException(serializerClass.getSimpleName() + "'s class name must ends with Serializer");
-            }
-            if (serializerRegistry.contains(serializerClass.getName())) {
-                throw new SerializationException(serializerClass.getSimpleName() + " already registered");
-            }
-            serializerRegistry.add(serializerClass.getName());
+    public void register(@NotNull Class<? extends Serializer<?>> serializerClass) throws SerializationException {
+        if (!Serializer.class.isAssignableFrom(serializerClass)) {
+            throw new SerializationException(serializerClass.getSimpleName() + " must implement Serializer");
         }
+        if (!serializerClass.getSimpleName().endsWith("Serializer")) {
+            throw new SerializationException(serializerClass.getSimpleName() + "'s class name must ends with Serializer");
+        }
+        if (serializerRegistry.containsKey(serializerClass)) {
+            throw new SerializationException(serializerClass.getSimpleName() + " already registered");
+        }
+        serializerRegistry.put(serializerClass, getSerializerInstance(serializerClass));
+
     }
 
     @SneakyThrows(SerializationException.class)
