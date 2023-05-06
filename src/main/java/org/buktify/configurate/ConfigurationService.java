@@ -16,6 +16,7 @@ import org.buktify.configurate.annotation.Variable;
 import org.buktify.configurate.exception.ConfigurationException;
 import org.buktify.configurate.exception.SerializationException;
 import org.buktify.configurate.serialization.SerializerFactory;
+import org.buktify.configurate.serialization.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -55,13 +56,13 @@ public class ConfigurationService {
     /**
      * Registers serializers for the specified classes.
      *
-     * @param serializers the classes to register serializers for
+     * @param serializer the class to register serializer for
      * @return the configuration service
      */
     @SuppressWarnings("unused")
     @SneakyThrows(SerializationException.class)
-    public ConfigurationService registerSerializers(@NotNull Class<?>... serializers) {
-        serializerFactory.register(serializers);
+    public ConfigurationService registerSerializers(@NotNull Class<? extends Serializer<?>> serializer) {
+        serializerFactory.register(serializer);
         return this;
     }
 
@@ -115,19 +116,19 @@ public class ConfigurationService {
             Variable variable = field.getAnnotation(Variable.class);
             if (variable == null) continue;
             field.setAccessible(true);
-            if (field.getType().isAssignableFrom(List.class)) {
-                Class<?> genericType = getGenericType(field);
-                if (!serializerFactory.getPrimitivesList().contains(genericType)) {
-                    field.set(configuration, serializerFactory.deserializeTypedList(genericType, variable.value(), fileConfiguration));
-                    continue;
-                }
-            }
-            field.set(configuration, serializerFactory.deserialize(field.getType(), variable.value(), fileConfiguration));
+            field.set(configuration, serializerFactory.deserialize(field, field.getType(), variable.value(), fileConfiguration));
         }
         configurationPool.put(configuration);
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    /**
+     * Processes configuration object and linked configuration file to check
+     * if all properties exist in .yml file and apply default values if needed.
+     *
+     * @param configuration configuration object
+     * @param file          a file, which configuration is connected with
+     */
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext"})
     @SneakyThrows({IOException.class, InvalidConfigurationException.class, IllegalAccessException.class})
     private void updateConfiguration(@NotNull Object configuration, @NotNull File file) {
         file.getParentFile().mkdirs();
@@ -139,35 +140,15 @@ public class ConfigurationService {
             if (variable == null) continue;
             if (fileConfiguration.isSet(variable.value())) continue;
             field.setAccessible(true);
-
-            if (field.getType().isAssignableFrom(List.class)) {
-                Class<?> genericType = getGenericType(field);
-                if (!serializerFactory.getPrimitivesList().contains(genericType)) {
-                    serializerFactory.serializeTypedList(field.get(configuration), genericType, variable.value(), fileConfiguration);
-                    Comment comment = field.getAnnotation(Comment.class);
-                    if (comment == null) continue;
-                    try {
-                        fileConfiguration.setComments(variable.value(), Arrays.stream(comment.value()).toList());
-                    } catch (Exception ignored) {
-                        log.warn("Comments are not supported on your Bukkit version");
-                    }
-                    continue;
-                }
-            }
-            serializerFactory.serialize(field.get(configuration), variable.value(), fileConfiguration);
+            serializerFactory.serialize(field, field.get(configuration), variable.value(), fileConfiguration);
             Comment comment = field.getAnnotation(Comment.class);
             if (comment == null) continue;
-            fileConfiguration.setComments(variable.value(), Arrays.stream(comment.value()).toList());
-
+            try {
+                fileConfiguration.setComments(variable.value(), Arrays.stream(comment.value()).toList());
+            } catch (Exception ignored) {
+                log.warn("Comments are not supported on your Bukkit version");
+            }
         }
         fileConfiguration.save(file);
-    }
-
-    @SneakyThrows(ClassNotFoundException.class)
-    private Class<?> getGenericType(@NotNull Field field) {
-        String type = field.getGenericType().getTypeName();
-        int startIndex = type.indexOf("<") + 1;
-        int endIndex = type.lastIndexOf(">");
-        return Class.forName(type.substring(startIndex, endIndex));
     }
 }

@@ -31,7 +31,6 @@ class ConfigurationPoolTest {
         assertNotNull(configurationPool.get(ValidTestConfiguration.class));
     }
 
-
     @Test
     @SneakyThrows
     void whenConfigurationAlreadyLoaded_ThenThrowException() {

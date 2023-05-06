@@ -1,7 +1,7 @@
 package org.buktify.configurate.serialization;
 
+import com.google.common.primitives.Primitives;
 import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -13,6 +13,7 @@ import org.buktify.configurate.serialization.serializer.impl.bukkit.LocationSeri
 import org.buktify.configurate.serialization.serializer.impl.bukkit.WorldSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
@@ -21,11 +22,9 @@ import java.util.List;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class SerializerFactory {
 
-    @Getter
     List<Class<?>> primitivesList = List.of(Boolean.class, Short.class, Double.class, Byte.class, String.class, Integer.class, Character.class);
-
     HashMap<Class<? extends Serializer<?>>, Serializer<?>> serializerRegistry = new HashMap<>();
-
+    TypedListSerializer typedListSerializer = new TypedListSerializer();
 
     public SerializerFactory() {
         registerDefaultSerializers();
@@ -42,7 +41,6 @@ public class SerializerFactory {
             throw new SerializationException(serializerClass.getSimpleName() + " already registered");
         }
         serializerRegistry.put(serializerClass, getSerializerInstance(serializerClass));
-
     }
 
     @SneakyThrows(SerializationException.class)
@@ -59,41 +57,59 @@ public class SerializerFactory {
         register(ItemStackSerializer.class);
     }
 
-    @SuppressWarnings("unchecked")
-    @SneakyThrows({SerializationException.class})
-    public <T> void serialize(@NotNull T object, @NotNull String path, @NotNull FileConfiguration configuration) {
-        getSerializer((Class<T>) object.getClass()).serialize(object, path, configuration);
-    }
-
-    @SneakyThrows(SerializationException.class)
-    public <T> T deserialize(@NotNull Class<T> type, @NotNull String path, @NotNull FileConfiguration configuration) {
-        return getSerializer(type).deserialize(path, configuration);
-    }
-
-    @SneakyThrows({SerializationException.class})
-    @SuppressWarnings("unchecked")
-    public <T> void serializeTypedList(@NotNull Object list, @NotNull Class<T> genericType, @NotNull String path, @NotNull FileConfiguration configuration) {
-        new TypedListSerializer().serialize(((List<T>) list), getSerializer(genericType), path, configuration);
-    }
-
-    @SneakyThrows(SerializationException.class)
-    public <T> List<T> deserializeTypedList(@NotNull Class<T> genericType, @NotNull String path, @NotNull FileConfiguration configuration) {
-        return new TypedListSerializer().deserialize(getSerializer(genericType), path, configuration);
-    }
-
     @SuppressWarnings({"unchecked"})
     @SneakyThrows(ClassNotFoundException.class)
     private <T> Serializer<T> getSerializer(@NotNull Class<T> type) throws SerializationException {
-        if (type.getSimpleName().contains("List")) {
+        if (List.class.isAssignableFrom(type)) {
             return (Serializer<T>) getSerializerInstance(ListSerializer.class);
         }
         String serializerClassName = type.getSimpleName() + "Serializer";
-        for (String serializer : serializerRegistry) {
+        for (String serializer : serializerRegistry.keySet().stream().map(Class::getName).toList()) {
             if (serializer.contains(serializerClassName)) {
                 return (Serializer<T>) getSerializerInstance(Class.forName(serializer));
             }
         }
         throw new SerializationException("Serializer " + serializerClassName + " not found");
+    }
+
+    @SneakyThrows({SerializationException.class})
+    @SuppressWarnings("unchecked")
+    public <T> void serialize(@NotNull Field field, @NotNull T object, @NotNull String path, @NotNull FileConfiguration configuration) {
+        Class<T> objectClass = (Class<T>) object.getClass();
+        if (object.getClass().isPrimitive()) {
+            objectClass = Primitives.wrap(objectClass);
+        }
+        if (object instanceof List<?> list) {
+            Class<?> genericType = getFieldGenericType(field);
+            if (!primitivesList.contains(genericType)) {
+                serializeTypedList(object, genericType, path, configuration);
+            }
+        }
+        getSerializer(objectClass).serialize(object, path, configuration);
+    }
+
+    @SneakyThrows(SerializationException.class)
+    @SuppressWarnings("unchecked")
+    public <T> T deserialize(@NotNull Field field, @NotNull Class<T> type, @NotNull String path, @NotNull FileConfiguration configuration) {
+        if (type.isPrimitive()) type = Primitives.wrap(type);
+        if (List.class.isAssignableFrom(type)) {
+            Class<?> genericType = getFieldGenericType(field);
+            if (!primitivesList.contains(genericType)) {
+                return (T) deserializeTypedList(genericType, path, configuration);
+            }
+        }
+        return getSerializer(type).deserialize(path, configuration);
+    }
+
+    @SneakyThrows({SerializationException.class})
+    @SuppressWarnings("unchecked")
+    private <T> void serializeTypedList(@NotNull Object list, @NotNull Class<T> genericType, @NotNull String path, @NotNull FileConfiguration configuration) {
+        typedListSerializer.serialize(((List<T>) list), getSerializer(genericType), path, configuration);
+    }
+
+    @SneakyThrows(SerializationException.class)
+    private <T> List<T> deserializeTypedList(@NotNull Class<T> genericType, @NotNull String path, @NotNull FileConfiguration configuration) {
+        return typedListSerializer.deserialize(getSerializer(genericType), path, configuration);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -104,5 +120,13 @@ public class SerializerFactory {
         } catch (NoSuchMethodException e) {
             throw new SerializationException(type.getSimpleName() + " must have no arguments constructor");
         }
+    }
+
+    @SneakyThrows(ClassNotFoundException.class)
+    private Class<?> getFieldGenericType(@NotNull Field field) {
+        String type = field.getGenericType().getTypeName();
+        int startIndex = type.indexOf("<") + 1;
+        int endIndex = type.lastIndexOf(">");
+        return Class.forName(type.substring(startIndex, endIndex));
     }
 }

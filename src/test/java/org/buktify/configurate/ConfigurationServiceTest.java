@@ -8,12 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ConfigurationServiceTest {
 
@@ -22,15 +21,6 @@ class ConfigurationServiceTest {
     @BeforeEach
     void setUp() {
         configurationService = new ConfigurationService();
-    }
-
-    @Test
-    @SneakyThrows
-    void givenStringList_ThenReturnStringClass() {
-        Method getGenericType = ConfigurationService.class.getDeclaredMethod("getGenericType", Field.class);
-        getGenericType.setAccessible(true);
-        Class<?> result = (Class<?>) getGenericType.invoke(configurationService, ValidTestConfiguration.class.getDeclaredField("stringList"));
-        assertEquals(result, String.class);
     }
 
     @Test
@@ -61,7 +51,7 @@ class ConfigurationServiceTest {
             filePath = "%plugin_root%/someDirectory/%filename%"
     )
     @NoArgsConstructor
-    @SuppressWarnings("FieldMayBeFinal")
+    @SuppressWarnings({"FieldMayBeFinal", "unused"})
     private static class ValidTestConfiguration {
 
         private List<String> stringList = new ArrayList<>();
