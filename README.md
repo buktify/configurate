@@ -33,7 +33,7 @@ public class MyConfiguration {
 
     @Comment({"Some comment", "Some other comment"})
     @Variable("some.string")
-    String someString;
+    String someString = "hello";
 
 }
 ```
@@ -48,6 +48,8 @@ public class MyConfiguration {
 `@Comment` добавляет комментарии при первичном создании файла конфигурации.
 Поддерживается с 1.19
 
+Каждое поле, помеченое аннотацией `@Variable` должно иметь значение по умолчанию.
+
 ### Сервис-обработчик конфигураций.
 
 ```java
@@ -59,6 +61,8 @@ ConfigurationService configurationService=new ConfigurationService()
 
 При инициализации задайте корневую папку, а так-же сами классы, которые хотите обработать.
 Метод `apply()` начинает обработку всех зарегистрированных классов.
+
+Вам не нужно добавлять `.yml` файлы в ресурсы плагина, они будут созданы исходя из того, как вы их сконфигурируете.
 
 ### Получение объектов конфигураций
 
