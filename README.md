@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.buktify:configurate:1.0.3'
+    compileOnly 'org.buktify:configurate:1.0.4'
 }
 ```
 
