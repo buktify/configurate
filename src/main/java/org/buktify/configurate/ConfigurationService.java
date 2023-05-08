@@ -61,7 +61,7 @@ public class ConfigurationService {
      */
     @SuppressWarnings("unused")
     @SneakyThrows(SerializationException.class)
-    public ConfigurationService registerSerializers(@NotNull Class<? extends Serializer<?>> serializer) {
+    public ConfigurationService registerSerializer(@NotNull Class<? extends Serializer<?>> serializer) {
         serializerFactory.register(serializer);
         return this;
     }

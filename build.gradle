@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.buktify'
-version = '1.0.3'
+version = '1.0.4'
 sourceCompatibility = '17'
 
 dependencies {
@@ -23,7 +23,7 @@ publishing {
     repositories {
         maven {
             name = 'crazy-repo'
-            url = 'https://repo.crazylegend.space/private'
+            url = 'https://repo.crazylegend.space/public'
             credentials {
                 username = System.getenv("CRAZY_REPO_USER")
                 password = System.getenv("CRAZY_REPO_PASSWORD")
@@ -35,7 +35,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = 'configurate'
             group = 'org.buktify'
-            version = '1.0.3'
+            version = '1.0.4'
             from components.java
             versionMapping {
                 usage('java-api') {
