@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("unused")
 public class BooleanSerializer implements Serializer<Boolean> {
+
     @Override
     public Boolean deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
         return configuration.getBoolean(path);
