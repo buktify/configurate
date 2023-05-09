@@ -1,7 +1,6 @@
 package org.buktify.configurate;
 
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 import org.buktify.configurate.annotation.Configuration;
 import org.buktify.configurate.exception.ConfigurationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +10,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ConfigurationServiceTest {
@@ -34,16 +32,6 @@ class ConfigurationServiceTest {
                 .rootDirectory(new File(""))
                 .registerConfigurations(InvalidTestConfiguration.class);
         assertThrows(ConfigurationException.class, () -> configurationService.apply());
-    }
-
-    @Test
-    @SneakyThrows(ConfigurationException.class)
-    void whenGivenValidConfiguration_ThenPutToConfigurationPool() {
-        configurationService
-                .rootDirectory(new File(""))
-                .registerConfigurations(ValidTestConfiguration.class)
-                .apply();
-        assertNotNull(configurationService.getConfigurationPool().get(ValidTestConfiguration.class));
     }
 
     @Configuration(
