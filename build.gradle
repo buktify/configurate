@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.buktify'
-version = '1.0.4'
+version = '1.0.5'
 sourceCompatibility = '17'
 
 dependencies {
@@ -35,7 +35,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = 'configurate'
             group = 'org.buktify'
-            version = '1.0.4'
+            version = '1.0.5'
             from components.java
             versionMapping {
                 usage('java-api') {
