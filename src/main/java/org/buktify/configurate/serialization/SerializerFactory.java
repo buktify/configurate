@@ -8,6 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.buktify.configurate.exception.SerializationException;
 import org.buktify.configurate.serialization.serializer.Serializer;
 import org.buktify.configurate.serialization.serializer.impl.*;
+import org.buktify.configurate.serialization.serializer.impl.bukkit.HashMapSerializer;
 import org.buktify.configurate.serialization.serializer.impl.bukkit.ItemStackSerializer;
 import org.buktify.configurate.serialization.serializer.impl.bukkit.LocationSerializer;
 import org.buktify.configurate.serialization.serializer.impl.bukkit.WorldSerializer;
@@ -55,6 +56,7 @@ public class SerializerFactory {
         register(ClassSerializer.class);
         register(WorldSerializer.class);
         register(ItemStackSerializer.class);
+        register(HashMapSerializer.class);
     }
 
     @SuppressWarnings({"unchecked"})
