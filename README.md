@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.buktify:configurate:1.0.5'
+    implementation 'org.buktify:configurate:1.0.6'
 }
 ```
 

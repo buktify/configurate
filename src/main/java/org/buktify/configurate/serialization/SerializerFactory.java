@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -66,7 +67,7 @@ public class SerializerFactory {
             return (Serializer<T>) getSerializerInstance(ListSerializer.class);
         }
         String serializerClassName = type.getSimpleName() + "Serializer";
-        for (String serializer : serializerRegistry.keySet().stream().map(Class::getName).toList()) {
+        for (String serializer : serializerRegistry.keySet().stream().map(Class::getName).collect(Collectors.toList())) {
             if (serializer.contains(serializerClassName)) {
                 return (Serializer<T>) getSerializerInstance(Class.forName(serializer));
             }
@@ -81,7 +82,8 @@ public class SerializerFactory {
         if (object.getClass().isPrimitive()) {
             objectClass = Primitives.wrap(objectClass);
         }
-        if (object instanceof List<?> list) {
+        if (object instanceof List<?>) {
+            List<?> list = (List<?>) object;
             Class<?> genericType = getFieldGenericType(field);
             if (!primitivesList.contains(genericType)) {
                 serializeTypedList(object, genericType, path, configuration);

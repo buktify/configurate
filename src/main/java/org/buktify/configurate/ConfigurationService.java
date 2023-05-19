@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -22,16 +22,18 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A service for managing and applying configurations.
  */
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 @SuppressWarnings("unused")
 public class ConfigurationService {
 
@@ -73,7 +75,7 @@ public class ConfigurationService {
      * @return the configuration service
      */
     public ConfigurationService registerConfigurations(@NotNull Class<?>... objects) {
-        loadedConfigurations.addAll(Arrays.stream(objects).toList());
+        loadedConfigurations.addAll(Arrays.stream(objects).collect(Collectors.toList()));
         return this;
     }
 
@@ -107,7 +109,7 @@ public class ConfigurationService {
         Configuration configurationAnnotation = configurationClass.getAnnotation(Configuration.class);
         if (configurationAnnotation == null)
             throw new ConfigurationException("Configuration " + configuration.getClass().getSimpleName() + " must be annotated with @Configuration");
-        List<Field> fields = Arrays.stream(configuration.getClass().getDeclaredFields()).toList();
+        List<Field> fields = Arrays.stream(configuration.getClass().getDeclaredFields()).collect(Collectors.toList());
         File file = new File(baseDirectory + configurationAnnotation.filePath().replaceAll("%plugin_root%", "").replaceAll("%filename%", configurationAnnotation.fileName()));
         updateConfiguration(configuration, file);
         FileConfiguration fileConfiguration = new YamlConfiguration();
@@ -144,7 +146,8 @@ public class ConfigurationService {
             Comment comment = field.getAnnotation(Comment.class);
             if (comment == null) continue;
             try {
-                fileConfiguration.setComments(variable.value(), Arrays.stream(comment.value()).toList());
+                Method method = FileConfiguration.class.getMethod("setComments", String.class, List.class);
+                method.invoke(fileConfiguration, variable.value(), Arrays.stream(comment.value()).collect(Collectors.toList()));
             } catch (Exception ignored) {
                 log.warn("Comments are not supported on your Bukkit version");
             }
