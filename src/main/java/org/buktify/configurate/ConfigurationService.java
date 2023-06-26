@@ -83,12 +83,13 @@ public class ConfigurationService {
      * Applies the registered configurations by processing and creating default configuration files if needed.
      */
     @SneakyThrows(ConfigurationException.class)
-    public void apply() {
+    public ConfigurationService apply() {
         if (baseDirectory == null)
             throw new ConfigurationException("Root directory is null, please specify it before usage");
         for (Class<?> configuration : loadedConfigurations) {
             processConfiguration(configuration);
         }
+        return this;
     }
 
     /**

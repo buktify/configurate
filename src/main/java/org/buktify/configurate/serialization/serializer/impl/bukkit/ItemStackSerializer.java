@@ -12,9 +12,4 @@ public class ItemStackSerializer implements Serializer<ItemStack> {
     public ItemStack deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
         return configuration.getItemStack(path);
     }
-
-    @Override
-    public void serialize(@NotNull ItemStack itemStack, @NotNull String path, @NotNull FileConfiguration configuration) {
-        configuration.set(path, configuration);
-    }
 }

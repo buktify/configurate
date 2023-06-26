@@ -11,5 +11,4 @@ public final class StringSerializer implements Serializer<String> {
     public String deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
         return configuration.getString(path);
     }
-
 }

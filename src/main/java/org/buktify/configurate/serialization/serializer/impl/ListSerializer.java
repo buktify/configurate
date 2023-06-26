@@ -13,10 +13,4 @@ public class ListSerializer implements Serializer<List<?>> {
     public List<?> deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
         return configuration.getList(path);
     }
-
-    @Override
-    public void serialize(@NotNull List<?> list, @NotNull String path, @NotNull FileConfiguration configuration) {
-        Serializer.super.serialize(list, path, configuration);
-    }
-
 }

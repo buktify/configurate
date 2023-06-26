@@ -42,12 +42,14 @@ public class SerializerFactoryTest {
 
     @Test
     @SneakyThrows
-    void givenStringList_ThenReturnStringClass() {
+    void givenMobList_ThenReturnMobClass() {
         Method getGenericType = SerializerFactory.class.getDeclaredMethod("getFieldGenericType", Field.class);
         getGenericType.setAccessible(true);
         Class<?> result = (Class<?>) getGenericType.invoke(serializerFactory, SerializerFactoryTest.ValidTestConfiguration.class.getDeclaredField("stringList"));
-        assertEquals(result, String.class);
+        assertEquals(result, Mob.class);
     }
+
+
 
     @Test
     @SneakyThrows
@@ -75,7 +77,11 @@ public class SerializerFactoryTest {
     @SuppressWarnings({"FieldMayBeFinal", "unused"})
     private static class ValidTestConfiguration {
 
-        private List<String> stringList = new ArrayList<>();
+        private List<Mob> stringList = new ArrayList<>();
+
+    }
+
+    private static class Mob{
 
     }
 
@@ -85,5 +91,12 @@ public class SerializerFactoryTest {
         public String deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
             return null;
         }
+
+        @Override
+        public void serialize(@NotNull String object, @NotNull String path, @NotNull FileConfiguration configuration) {
+            configuration.set(path, object);
+        }
+
+
     }
 }

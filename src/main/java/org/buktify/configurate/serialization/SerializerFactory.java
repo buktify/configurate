@@ -8,10 +8,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.buktify.configurate.exception.SerializationException;
 import org.buktify.configurate.serialization.serializer.Serializer;
 import org.buktify.configurate.serialization.serializer.impl.*;
-import org.buktify.configurate.serialization.serializer.impl.bukkit.HashMapSerializer;
-import org.buktify.configurate.serialization.serializer.impl.bukkit.ItemStackSerializer;
-import org.buktify.configurate.serialization.serializer.impl.bukkit.LocationSerializer;
-import org.buktify.configurate.serialization.serializer.impl.bukkit.WorldSerializer;
+import org.buktify.configurate.serialization.serializer.impl.bukkit.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -57,6 +54,7 @@ public class SerializerFactory {
         register(ClassSerializer.class);
         register(WorldSerializer.class);
         register(ItemStackSerializer.class);
+        register(MaterialSerializer.class);
         register(HashMapSerializer.class);
     }
 
@@ -88,6 +86,7 @@ public class SerializerFactory {
             if (!primitivesList.contains(genericType)) {
                 serializeTypedList(object, genericType, path, configuration);
             }
+            return;
         }
         getSerializer(objectClass).serialize(object, path, configuration);
     }
