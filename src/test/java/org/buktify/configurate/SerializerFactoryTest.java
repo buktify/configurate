@@ -49,8 +49,6 @@ public class SerializerFactoryTest {
         assertEquals(result, Mob.class);
     }
 
-
-
     @Test
     @SneakyThrows
     void whenClassGiven_AndSerializerNotRegistered_ThenThrowException() {
@@ -91,12 +89,5 @@ public class SerializerFactoryTest {
         public String deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
             return null;
         }
-
-        @Override
-        public void serialize(@NotNull String object, @NotNull String path, @NotNull FileConfiguration configuration) {
-            configuration.set(path, object);
-        }
-
-
     }
 }

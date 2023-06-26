@@ -41,7 +41,7 @@ class ConfigurationServiceTest {
     void whenGivenValidConfiguration_ThenProcess() {
         assertDoesNotThrow(() -> {
             configurationService
-                    .rootDirectory(new File("/test"))
+                    .rootDirectory(new File("."))
                     .registerConfigurations(ValidTestConfiguration.class)
                     .apply();
         });

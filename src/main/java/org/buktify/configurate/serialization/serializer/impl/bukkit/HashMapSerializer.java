@@ -9,6 +9,7 @@ import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class HashMapSerializer implements Serializer<HashMap<?, ?>> {
+
     @Override
     public HashMap<?, ?> deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
         return (HashMap<?, ?>) Objects.requireNonNull(configuration.getConfigurationSection(path)).getValues(false);

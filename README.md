@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.buktify:configurate:1.0.6'
+    implementation 'org.buktify:configurate:1.1.0'
 }
 ```
 
@@ -53,7 +53,7 @@ public class MyConfiguration {
 ### Сервис-обработчик конфигураций.
 
 ```java
-ConfigurationService configurationService=new ConfigurationService()
+ConfigurationService configurationService = new ConfigurationService()
         .rootDirectory(plugin.getDataFolder())
         .registerConfigurations(MyConfiguration.class);
         configurationService.apply();

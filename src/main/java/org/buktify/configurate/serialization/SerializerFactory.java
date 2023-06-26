@@ -85,8 +85,8 @@ public class SerializerFactory {
             Class<?> genericType = getFieldGenericType(field);
             if (!primitivesList.contains(genericType)) {
                 serializeTypedList(object, genericType, path, configuration);
+                return;
             }
-            return;
         }
         getSerializer(objectClass).serialize(object, path, configuration);
     }

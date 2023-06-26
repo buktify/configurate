@@ -82,6 +82,7 @@ public class ConfigurationService {
     /**
      * Applies the registered configurations by processing and creating default configuration files if needed.
      */
+    @SuppressWarnings("all")
     @SneakyThrows(ConfigurationException.class)
     public ConfigurationService apply() {
         if (baseDirectory == null)
@@ -131,7 +132,7 @@ public class ConfigurationService {
      * @param configuration configuration object
      * @param file          a file, which configuration is connected with
      */
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "BlockingMethodInNonBlockingContext"})
+    @SuppressWarnings({"all"})
     @SneakyThrows({IOException.class, InvalidConfigurationException.class, IllegalAccessException.class})
     private void updateConfiguration(@NotNull Object configuration, @NotNull File file) {
         file.getParentFile().mkdirs();
