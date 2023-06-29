@@ -128,8 +128,12 @@ public class SerializerFactory {
     @SneakyThrows(ClassNotFoundException.class)
     private Class<?> getFieldGenericType(@NotNull Field field) {
         String type = field.getGenericType().getTypeName();
-        int startIndex = type.indexOf("<") + 1;
-        int endIndex = type.lastIndexOf(">");
-        return Class.forName(type.substring(startIndex, endIndex));
+        while (true){
+            int startIndex = type.indexOf("<") + 1;
+            int endIndex = type.lastIndexOf(">");
+            if(endIndex == -1) break;
+            type = type.substring(startIndex, endIndex);
+        }
+        return Class.forName(type);
     }
 }

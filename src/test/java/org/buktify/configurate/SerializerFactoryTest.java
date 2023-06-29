@@ -2,6 +2,7 @@ package org.buktify.configurate;
 
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.buktify.configurate.annotation.Configuration;
 import org.buktify.configurate.exception.SerializationException;
@@ -51,11 +52,21 @@ public class SerializerFactoryTest {
 
     @Test
     @SneakyThrows
+    void givenListOfMobList_ThenReturnListClass() {
+        Method getGenericType = SerializerFactory.class.getDeclaredMethod("getFieldGenericType", Field.class);
+        getGenericType.setAccessible(true);
+        Class<?> result = (Class<?>) getGenericType.invoke(serializerFactory, SerializerFactoryTest.ValidTestConfiguration.class.getDeclaredField("someOtherList"));
+        assertEquals(result, Material.class);
+    }
+
+    @Test
+    @SneakyThrows
     void whenClassGiven_AndSerializerNotRegistered_ThenThrowException() {
         Method getSerializer = SerializerFactory.class.getDeclaredMethod("getSerializer", Class.class);
         getSerializer.setAccessible(true);
         assertThrows(InvocationTargetException.class, () -> getSerializer.invoke(serializerFactory, Field.class));
     }
+
 
     @Test
     void whenGivenClassWithIncorrectNaming_ThenThrowException() {
@@ -76,6 +87,8 @@ public class SerializerFactoryTest {
     private static class ValidTestConfiguration {
 
         private List<Mob> stringList = new ArrayList<>();
+
+        private List<List<List<Material>>> someOtherList = new ArrayList<>();
 
     }
 
