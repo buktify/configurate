@@ -1,13 +1,12 @@
 plugins {
     id 'java'
     id 'maven-publish'
+    id "com.github.monosoul.yadegrap" version "1.0.0"
     id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'org.buktify'
 version = '1.2.0'
-sourceCompatibility = '1.9'
-targetCompatibility = '1.9'
 
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
@@ -23,6 +22,24 @@ dependencies {
 
     testImplementation 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+    sourceCompatibility = '1.9'
+    targetCompatibility = '1.9'
+
+}
+
+tasks {
+    var delombok = delombok
+
+    javadoc {
+        options.addStringOption('Xdoclint:none', '-quiet')
+        dependsOn(delombok)
+        setSource(delombok)
+    }
 }
 
 publishing {
