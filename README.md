@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.buktify:configurate:1.1.1'
+    implementation 'org.buktify:configurate:1.2.0'
 }
 ```
 
@@ -53,10 +53,9 @@ public class MyConfiguration {
 ### Сервис-обработчик конфигураций.
 
 ```java
-ConfigurationService configurationService = new ConfigurationService()
-        .rootDirectory(plugin.getDataFolder())
-        .registerConfigurations(MyConfiguration.class);
-        configurationService.apply();
+ConfigurationService configurationService=new ConfigurationService(plugin.getDataFolder())
+        .registerConfigurations(MyConfiguration.class)
+        .apply();
 ```
 
 При инициализации задайте корневую папку, а так-же сами классы, которые хотите обработать.
@@ -69,7 +68,7 @@ ConfigurationService configurationService = new ConfigurationService()
 Для получения объекта конфигурации нужно обратиться к пулу конфигураций.
 
 ```java
-MyConfiguration configuration=configurationService.getConfigurationPool().get(MyConfiguration.class);
+MyConfiguration configuration=configurationService.getConfigurationPool().getConfiguration(MyConfiguration.class);
 ```
 
 ### Сериализация кастомных классов
@@ -98,7 +97,8 @@ public class MyClass {
 public class MyClassSerializer implements Serializer<MyClass> {
 
     @Override
-    public MyClass deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
+
+    public @NotNull MyClass deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
         String someProperty = configuration.getSting(path + ".property");
         return new MyClass(someProperty);
     }
@@ -113,11 +113,10 @@ public class MyClassSerializer implements Serializer<MyClass> {
 Далее, при инициализации `ConfigurationService` просто регистрируете сериализатор.
 
 ```java
-new ConfigurationService()
-        .rootDirectory(plugin.getDataFolder())
+new ConfigurationService(plugin.getDataFolder())
         .registerConfigurations(MyConfiguration.class)
-        .registerSerializer(MyClassSerializer.class);
-        configurationService.apply();
+        .registerSerializers(MyClassSerializer.class)
+        .apply();
 ```
 
 

@@ -4,6 +4,8 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.buktify.configurate.annotation.Configuration;
 import org.buktify.configurate.exception.ConfigurationException;
+import org.buktify.configurate.pool.ConfigurationPool;
+import org.buktify.configurate.pool.ConfigurationPoolImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,26 +18,26 @@ class ConfigurationPoolTest {
 
     @BeforeEach
     void setUp() {
-        configurationPool = new ConfigurationPool();
+        configurationPool = new ConfigurationPoolImpl();
     }
 
     @Test
     void whenConfigurationNotLoaded_ThenThrowException() {
-        assertThrows(ConfigurationException.class, () -> configurationPool.get(ValidTestConfiguration.class));
+        assertThrows(ConfigurationException.class, () -> configurationPool.getConfiguration(ValidTestConfiguration.class));
     }
 
     @Test
     @SneakyThrows
     void whenConfigurationLoaded_ThenReturn() {
-        configurationPool.put(new ValidTestConfiguration());
-        assertNotNull(configurationPool.get(ValidTestConfiguration.class));
+        configurationPool.addConfiguration(new ValidTestConfiguration());
+        assertNotNull(configurationPool.getConfiguration(ValidTestConfiguration.class));
     }
 
     @Test
     @SneakyThrows
     void whenConfigurationAlreadyLoaded_ThenThrowException() {
-        configurationPool.put(new ValidTestConfiguration());
-        assertThrows(ConfigurationException.class, () -> configurationPool.put(new ValidTestConfiguration()));
+        configurationPool.addConfiguration(new ValidTestConfiguration());
+        assertThrows(ConfigurationException.class, () -> configurationPool.addConfiguration(new ValidTestConfiguration()));
     }
 
     @Configuration(

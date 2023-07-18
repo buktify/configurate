@@ -18,7 +18,7 @@ import java.util.Objects;
 public class LocationSerializer implements Serializer<Location> {
 
     @Override
-    public Location deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
+    public @NotNull Location deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
         World world = Bukkit.getWorld(Objects.requireNonNull(configuration.getString(path + ".world")));
         double x = configuration.getDouble(path + ".x");
         double y = configuration.getDouble(path + ".y");

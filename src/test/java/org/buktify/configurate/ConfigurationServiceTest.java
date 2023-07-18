@@ -21,18 +21,12 @@ class ConfigurationServiceTest {
 
     @BeforeEach
     void setUp() {
-        configurationService = new ConfigurationService();
-    }
-
-    @Test
-    void whenRootDirectoryIsNull_ThenThrowException() {
-        assertThrows(ConfigurationException.class, () -> configurationService.apply());
+        configurationService = new SimpleConfigurationService(new File("/test/"));
     }
 
     @Test
     void whenGivenInvalidConfiguration_ThenThrowException() {
         configurationService
-                .rootDirectory(new File(""))
                 .registerConfigurations(InvalidTestConfiguration.class);
         assertThrows(ConfigurationException.class, () -> configurationService.apply());
     }
@@ -41,7 +35,6 @@ class ConfigurationServiceTest {
     void whenGivenValidConfiguration_ThenProcess() {
         assertDoesNotThrow(() -> {
             configurationService
-                    .rootDirectory(new File("."))
                     .registerConfigurations(ValidTestConfiguration.class)
                     .apply();
         });
@@ -53,7 +46,7 @@ class ConfigurationServiceTest {
     )
     @NoArgsConstructor
     @SuppressWarnings({"FieldMayBeFinal", "unused"})
-    private static class ValidTestConfiguration {
+    public static class ValidTestConfiguration {
 
         @Variable("test.list")
         private List<String> stringList = new ArrayList<>();
@@ -65,7 +58,7 @@ class ConfigurationServiceTest {
 
     @NoArgsConstructor
     @SuppressWarnings("FieldMayBeFinal")
-    private static class InvalidTestConfiguration {
+    public static class InvalidTestConfiguration {
 
     }
 }

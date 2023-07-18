@@ -10,7 +10,7 @@ public class ClassSerializer implements Serializer<Class<?>> {
 
     @Override
     @SneakyThrows(ClassNotFoundException.class)
-    public Class<?> deserialize(@NotNull String path, @NotNull FileConfiguration fileConfiguration) {
+    public @NotNull Class<?> deserialize(@NotNull String path, @NotNull FileConfiguration fileConfiguration) {
         return Class.forName(fileConfiguration.getString(path));
     }
 

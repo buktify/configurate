@@ -5,11 +5,13 @@ import org.bukkit.inventory.ItemStack;
 import org.buktify.configurate.serialization.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 @SuppressWarnings("unused")
 public class ItemStackSerializer implements Serializer<ItemStack> {
 
     @Override
-    public ItemStack deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
-        return configuration.getItemStack(path);
+    public @NotNull ItemStack deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
+        return Objects.requireNonNull(configuration.getItemStack(path));
     }
 }

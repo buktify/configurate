@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class BooleanSerializer implements Serializer<Boolean> {
 
     @Override
-    public Boolean deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
+    public @NotNull Boolean deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
         return configuration.getBoolean(path);
     }
 }

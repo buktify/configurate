@@ -1,5 +1,8 @@
 package org.buktify.configurate.annotation;
 
+import org.buktify.configurate.serialization.provider.SerializationProvider;
+import org.buktify.configurate.serialization.provider.impl.DummySerializationProvider;
+import org.buktify.configurate.serialization.serializer.SerializationType;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.ElementType;
@@ -39,5 +42,15 @@ public @interface Configuration {
      * @return path of the configuration file.
      */
     @NotNull String filePath();
+
+    /**
+     * @return configuration's serialization way.
+     */
+    @NotNull SerializationType serialization() default SerializationType.REFLECT;
+
+    /**
+     * @return configuration class plain serializer, if needed.
+     */
+    @NotNull Class<? extends SerializationProvider<?>> provider() default DummySerializationProvider.class;
 
 }

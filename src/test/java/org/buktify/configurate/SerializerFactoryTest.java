@@ -5,9 +5,11 @@ import lombok.SneakyThrows;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.buktify.configurate.annotation.Configuration;
-import org.buktify.configurate.exception.SerializationException;
-import org.buktify.configurate.serialization.SerializerFactory;
+import org.buktify.configurate.annotation.Variable;
+import org.buktify.configurate.exception.ConfigurationException;
 import org.buktify.configurate.serialization.serializer.Serializer;
+import org.buktify.configurate.serialization.serializer.SerializerFactory;
+import org.buktify.configurate.serialization.serializer.SerializerFactoryImpl;
 import org.buktify.configurate.serialization.serializer.impl.ListSerializer;
 import org.buktify.configurate.serialization.serializer.impl.StringSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +32,7 @@ public class SerializerFactoryTest {
 
     @BeforeEach
     void setUp() {
-        serializerFactory = new SerializerFactory();
+        serializerFactory = new SerializerFactoryImpl();
     }
 
     @Test
@@ -41,23 +43,6 @@ public class SerializerFactoryTest {
         assertEquals(getSerializer.invoke(serializerFactory, List.class).getClass(), ListSerializer.class);
     }
 
-    @Test
-    @SneakyThrows
-    void givenMobList_ThenReturnMobClass() {
-        Method getGenericType = SerializerFactory.class.getDeclaredMethod("getFieldGenericType", Field.class);
-        getGenericType.setAccessible(true);
-        Class<?> result = (Class<?>) getGenericType.invoke(serializerFactory, SerializerFactoryTest.ValidTestConfiguration.class.getDeclaredField("stringList"));
-        assertEquals(result, Mob.class);
-    }
-
-    @Test
-    @SneakyThrows
-    void givenListOfMobList_ThenReturnListClass() {
-        Method getGenericType = SerializerFactory.class.getDeclaredMethod("getFieldGenericType", Field.class);
-        getGenericType.setAccessible(true);
-        Class<?> result = (Class<?>) getGenericType.invoke(serializerFactory, SerializerFactoryTest.ValidTestConfiguration.class.getDeclaredField("someOtherList"));
-        assertEquals(result, Material.class);
-    }
 
     @Test
     @SneakyThrows
@@ -69,13 +54,15 @@ public class SerializerFactoryTest {
 
 
     @Test
+    @SuppressWarnings("all")
     void whenGivenClassWithIncorrectNaming_ThenThrowException() {
-        assertThrows(SerializationException.class, () -> serializerFactory.register(SerializerString.class));
+        assertThrows(ConfigurationException.class, () -> serializerFactory.registerSerializers(SerializerString.class));
     }
 
     @Test
+    @SuppressWarnings("all")
     void whenGivenSerializer_AndAlreadyRegistered_ThenThrowException() {
-        assertThrows(SerializationException.class, () -> serializerFactory.register(StringSerializer.class));
+        assertThrows(ConfigurationException.class, () -> serializerFactory.registerSerializers(StringSerializer.class));
     }
 
     @Configuration(
@@ -86,20 +73,21 @@ public class SerializerFactoryTest {
     @SuppressWarnings({"FieldMayBeFinal", "unused"})
     private static class ValidTestConfiguration {
 
+        @Variable(value = "mob", serializer = StringSerializer.class)
+        Mob mob;
         private List<Mob> stringList = new ArrayList<>();
-
         private List<List<List<Material>>> someOtherList = new ArrayList<>();
 
     }
 
-    private static class Mob{
+    private static class Mob {
 
     }
 
     private static class SerializerString implements Serializer<String> {
 
         @Override
-        public String deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
+        public @NotNull String deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
             return null;
         }
     }

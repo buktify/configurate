@@ -12,8 +12,8 @@ import java.util.Objects;
 public class WorldSerializer implements Serializer<World> {
 
     @Override
-    public World deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
-        return Bukkit.getWorld(Objects.requireNonNull(configuration.getString(path)));
+    public @NotNull World deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
+        return Objects.requireNonNull(Bukkit.getWorld(Objects.requireNonNull(configuration.getString(path))));
     }
 
     @Override

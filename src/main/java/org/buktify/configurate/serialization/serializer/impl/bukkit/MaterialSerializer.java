@@ -9,7 +9,7 @@ import java.util.Objects;
 
 public class MaterialSerializer implements Serializer<Material> {
     @Override
-    public Material deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
+    public @NotNull Material deserialize(@NotNull String path, @NotNull FileConfiguration configuration) {
         return Material.valueOf(Objects.requireNonNull(configuration.getString(path)).toUpperCase());
     }
 

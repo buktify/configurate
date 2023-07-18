@@ -5,17 +5,23 @@ plugins {
 }
 
 group = 'org.buktify'
-version = '1.1.1'
-sourceCompatibility = "1.9"
+version = '1.2.0'
+sourceCompatibility = '1.9'
+targetCompatibility = '1.9'
 
 dependencies {
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
     compileOnly 'org.projectlombok:lombok:1.18.26'
-    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+
     implementation 'org.jetbrains:annotations:24.0.1'
+
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
-    testImplementation 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
+
     testCompileOnly 'org.projectlombok:lombok:1.18.26'
+
+    testImplementation 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
 }
 
@@ -31,11 +37,12 @@ publishing {
         }
     }
 
+
     publications {
         mavenJava(MavenPublication) {
             artifactId = 'configurate'
             group = 'org.buktify'
-            version = '1.1.1'
+            version = '1.2.0'
             from components.java
             versionMapping {
                 usage('java-api') {
@@ -49,8 +56,8 @@ publishing {
     }
 }
 
+
 test {
     useJUnitPlatform()
 }
 
-targetCompatibility = JavaVersion.VERSION_1_9

@@ -1,5 +1,7 @@
 package org.buktify.configurate.annotation;
 
+import org.buktify.configurate.serialization.serializer.Serializer;
+import org.buktify.configurate.serialization.serializer.impl.AdaptiveSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.ElementType;
@@ -17,10 +19,16 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
+@SuppressWarnings("deprecation")
 public @interface Variable {
 
     /**
      * @return path to property in configuration file
      */
     @NotNull String value();
+
+    /**
+     * @return specified serializer.
+     */
+    @NotNull Class<? extends Serializer<?>> serializer() default AdaptiveSerializer.class;
 }
