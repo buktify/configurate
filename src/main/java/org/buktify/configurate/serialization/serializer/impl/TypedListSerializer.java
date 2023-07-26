@@ -6,14 +6,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @SuppressWarnings("unused")
 public class TypedListSerializer {
 
+    @SuppressWarnings("all")
     public <T> List<T> deserialize(@NotNull Serializer<T> typeSerializer, @NotNull String path, @NotNull FileConfiguration configuration) {
         List<T> list = new ArrayList<>();
-        Objects.requireNonNull(configuration.getConfigurationSection(path)).getKeys(false).forEach(key -> list.add(typeSerializer.deserialize(path + "." + key, configuration)));
+        if (configuration.getConfigurationSection(path) == null) return list;
+        configuration.getConfigurationSection(path).getKeys(false).forEach(key -> list.add(typeSerializer.deserialize(path + "." + key, configuration)));
         return list;
     }
 

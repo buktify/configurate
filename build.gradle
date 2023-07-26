@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'org.buktify'
-version = '1.2.1'
+version = '1.2.2'
 
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
@@ -58,7 +58,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = 'configurate'
             group = 'org.buktify'
-            version = '1.2.1'
+            version = '1.2.2'
             from components.java
             versionMapping {
                 usage('java-api') {
