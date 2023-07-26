@@ -3,9 +3,9 @@ package org.buktify.configurate;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.buktify.configurate.annotation.Configuration;
 import org.buktify.configurate.annotation.Variable;
+import org.buktify.configurate.bukkit.configuration.file.FileConfiguration;
 import org.buktify.configurate.exception.ConfigurationException;
 import org.buktify.configurate.serialization.serializer.Serializer;
 import org.buktify.configurate.serialization.serializer.SerializerFactory;
@@ -56,13 +56,13 @@ public class SerializerFactoryTest {
     @Test
     @SuppressWarnings("all")
     void whenGivenClassWithIncorrectNaming_ThenThrowException() {
-        assertThrows(ConfigurationException.class, () -> serializerFactory.registerSerializers(SerializerString.class));
+        assertThrows(ConfigurationException.class, () -> serializerFactory.registerSerializers(List.of(StringSerializer.class)));
     }
 
     @Test
     @SuppressWarnings("all")
     void whenGivenSerializer_AndAlreadyRegistered_ThenThrowException() {
-        assertThrows(ConfigurationException.class, () -> serializerFactory.registerSerializers(StringSerializer.class));
+        assertThrows(ConfigurationException.class, () -> serializerFactory.registerSerializers(List.of(StringSerializer.class)));
     }
 
     @Configuration(

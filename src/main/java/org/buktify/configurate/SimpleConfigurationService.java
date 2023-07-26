@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,17 +39,28 @@ public class SimpleConfigurationService implements ConfigurationService {
         this.serializationService = new SerializationServiceImpl(baseDirectory, serializerFactory);
     }
 
-
     @Override
     @SafeVarargs
     public final @NotNull ConfigurationService registerSerializers(@NotNull Class<? extends Serializer<?>>... serializers) {
+        registerSerializers(Arrays.stream(serializers).collect(Collectors.toList()));
+        return this;
+    }
+
+    @Override
+    public @NotNull ConfigurationService registerSerializers(@NotNull Collection<Class<? extends Serializer<?>>> serializers) throws ConfigurationException {
         serializerFactory.registerSerializers(serializers);
         return this;
     }
 
     @Override
     public @NotNull ConfigurationService registerConfigurations(@NotNull Class<?>... objects) {
-        registeredConfigurations.addAll(Arrays.stream(objects).collect(Collectors.toList()));
+        registerConfigurations(Arrays.stream(objects).collect(Collectors.toList()));
+        return this;
+    }
+
+    @Override
+    public @NotNull ConfigurationService registerConfigurations(@NotNull Collection<Class<?>> objects) {
+        registeredConfigurations.addAll(objects);
         return this;
     }
 

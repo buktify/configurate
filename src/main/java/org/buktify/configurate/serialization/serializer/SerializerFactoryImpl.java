@@ -6,13 +6,13 @@ import lombok.experimental.FieldDefaults;
 import org.buktify.configurate.exception.ConfigurationException;
 import org.buktify.configurate.exception.SerializationException;
 import org.buktify.configurate.serialization.serializer.impl.*;
-import org.buktify.configurate.serialization.serializer.impl.bukkit.ItemStackSerializer;
 import org.buktify.configurate.serialization.serializer.impl.bukkit.LocationSerializer;
 import org.buktify.configurate.serialization.serializer.impl.bukkit.MaterialSerializer;
 import org.buktify.configurate.serialization.serializer.impl.bukkit.WorldSerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,24 +46,24 @@ public class SerializerFactoryImpl implements SerializerFactory {
     @SneakyThrows(SerializationException.class)
     private void registerDefaultSerializers() {
         registerSerializers(
-                IntegerSerializer.class,
-                BooleanSerializer.class,
-                StringSerializer.class,
-                FloatSerializer.class,
-                DoubleSerializer.class,
-                ListSerializer.class,
-                LocationSerializer.class,
-                ClassSerializer.class,
-                WorldSerializer.class,
-                ItemStackSerializer.class,
-                MaterialSerializer.class,
-                HashMapSerializer.class
+                List.of(
+                        IntegerSerializer.class,
+                        BooleanSerializer.class,
+                        StringSerializer.class,
+                        FloatSerializer.class,
+                        DoubleSerializer.class,
+                        ListSerializer.class,
+                        LocationSerializer.class,
+                        ClassSerializer.class,
+                        WorldSerializer.class,
+                        MaterialSerializer.class,
+                        HashMapSerializer.class
+                )
         );
     }
 
     @Override
-    @SafeVarargs
-    public final void registerSerializers(@NotNull Class<? extends Serializer<?>>... serializers) throws ConfigurationException {
+    public final void registerSerializers(@NotNull Collection<Class<? extends Serializer<?>>> serializers) throws ConfigurationException {
         for (Class<? extends Serializer<?>> serializerClass : serializers) {
             if (!Serializer.class.isAssignableFrom(serializerClass)) {
                 throw new ConfigurationException(serializerClass.getSimpleName() + " must implement Serializer");

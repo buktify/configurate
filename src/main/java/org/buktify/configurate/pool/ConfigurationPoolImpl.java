@@ -6,11 +6,20 @@ import org.buktify.configurate.exception.ConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ConfigurationPoolImpl implements ConfigurationPool {
 
     HashMap<Class<?>, Object> proceedConfigurations = new HashMap<>();
+
+
+    @Override
+    public @NotNull <T> List<T> getMappedConfigurationsList(@NotNull Function<? super Object, ? extends T> mapper) {
+        return proceedConfigurations.values().stream().map(mapper).collect(Collectors.toList());
+    }
 
     /**
      * {@inheritDoc}

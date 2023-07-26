@@ -1,5 +1,6 @@
 package org.buktify.configurate;
 
+
 import lombok.NoArgsConstructor;
 import org.bukkit.Material;
 import org.buktify.configurate.annotation.Configuration;

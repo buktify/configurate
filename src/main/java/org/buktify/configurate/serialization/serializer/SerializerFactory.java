@@ -4,6 +4,8 @@ import org.buktify.configurate.exception.ConfigurationException;
 import org.buktify.configurate.exception.SerializationException;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+
 /**
  * A factory interface for creating serializers and registering serializer classes.
  *
@@ -28,5 +30,5 @@ public interface SerializerFactory {
      */
     @NotNull
     @SuppressWarnings("all")
-    void registerSerializers(@NotNull Class<? extends Serializer<?>>... serializers) throws ConfigurationException;
+    void registerSerializers(@NotNull Collection<Class<? extends Serializer<?>>> serializers) throws ConfigurationException;
 }

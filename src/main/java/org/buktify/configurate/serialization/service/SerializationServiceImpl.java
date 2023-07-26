@@ -6,17 +6,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.buktify.configurate.annotation.Comment;
 import org.buktify.configurate.annotation.Configuration;
 import org.buktify.configurate.annotation.Variable;
+import org.buktify.configurate.bukkit.configuration.file.FileConfiguration;
+import org.buktify.configurate.bukkit.configuration.file.YamlConfiguration;
 import org.buktify.configurate.exception.ConfigurationException;
 import org.buktify.configurate.exception.SerializationException;
-import org.buktify.configurate.serialization.provider.SerializationProvider;
-import org.buktify.configurate.serialization.provider.impl.DummySerializationProvider;
 import org.buktify.configurate.serialization.serializer.SerializerFactory;
 import org.buktify.configurate.serialization.serializer.impl.TypedListSerializer;
+import org.buktify.configurate.serialization.serializer.impl.provider.SerializationProvider;
+import org.buktify.configurate.serialization.serializer.impl.provider.impl.DummySerializationProvider;
 import org.buktify.configurate.util.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -76,6 +76,7 @@ public class SerializationServiceImpl implements SerializationService {
         if (serializationProvider == null) {
             for (Field field : configurableFields) {
                 Variable variable = field.getAnnotation(Variable.class);
+                field.setAccessible(true);
                 fieldConsumer.accept(field, variable.value(), fileConfiguration);
             }
         }
@@ -155,7 +156,7 @@ public class SerializationServiceImpl implements SerializationService {
     @SuppressWarnings("unchecked")
     public <T> void serializeField(@NotNull Field field, @NotNull T value, @NotNull String path, @NotNull FileConfiguration configuration) {
         Class<T> objectClass = (Class<T>) value.getClass();
-        if (value.getClass().isPrimitive()) {
+        if (objectClass.isPrimitive()) {
             objectClass = Primitives.wrap(objectClass);
         }
         if (value instanceof List<?>) {

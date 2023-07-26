@@ -1,8 +1,8 @@
 package org.buktify.configurate.annotation;
 
-import org.buktify.configurate.serialization.provider.SerializationProvider;
-import org.buktify.configurate.serialization.provider.impl.DummySerializationProvider;
 import org.buktify.configurate.serialization.serializer.SerializationType;
+import org.buktify.configurate.serialization.serializer.impl.provider.SerializationProvider;
+import org.buktify.configurate.serialization.serializer.impl.provider.impl.DummySerializationProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.annotation.ElementType;

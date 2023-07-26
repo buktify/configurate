@@ -1,7 +1,7 @@
 package org.buktify.configurate.serialization.serializer.impl;
 
 import lombok.SneakyThrows;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.buktify.configurate.bukkit.configuration.file.FileConfiguration;
 import org.buktify.configurate.serialization.serializer.Serializer;
 import org.jetbrains.annotations.NotNull;
 

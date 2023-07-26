@@ -1,6 +1,6 @@
-package org.buktify.configurate.serialization.provider;
+package org.buktify.configurate.serialization.serializer.impl.provider;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import org.buktify.configurate.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 
 /**
