@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'org.buktify'
-version = '1.2.2'
+version = '1.2.3'
 
 dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
@@ -14,6 +14,7 @@ dependencies {
     compileOnly 'com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT'
     compileOnly 'org.projectlombok:lombok:1.18.26'
 
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.jetbrains:annotations:24.0.1'
 
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
@@ -58,7 +59,7 @@ publishing {
         mavenJava(MavenPublication) {
             artifactId = 'configurate'
             group = 'org.buktify'
-            version = '1.2.2'
+            version = '1.2.3'
             from components.java
             versionMapping {
                 usage('java-api') {
