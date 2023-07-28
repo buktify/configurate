@@ -2,7 +2,7 @@ package org.buktify.configurate.bukkit.configuration.file;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.buktify.configurate.bukkit.configuration.Configuration;
 import org.buktify.configurate.bukkit.configuration.InvalidConfigurationException;
 import org.buktify.configurate.bukkit.configuration.MemoryConfiguration;

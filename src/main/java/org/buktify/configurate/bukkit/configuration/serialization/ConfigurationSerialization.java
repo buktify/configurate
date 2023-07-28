@@ -1,6 +1,6 @@
 package org.buktify.configurate.bukkit.configuration.serialization;
 
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.buktify.configurate.bukkit.configuration.Configuration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
